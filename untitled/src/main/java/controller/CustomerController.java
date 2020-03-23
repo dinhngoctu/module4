@@ -40,7 +40,20 @@ public class CustomerController {
 
     @GetMapping("/customer/{id}/edit")
     public String editCustomer(@PathVariable int id, Model model) {
-        model.addAttribute(customerService.findById(id));
+        model.addAttribute("customer", customerService.findById(id));
         return "edit";
+    }
+
+    @PostMapping
+    public String update(Customer customer, RedirectAttributes redirectAttributes) {
+        customerService.update(customer.getId(), customer);
+        redirectAttributes.addFlashAttribute("success", "Modify customer successfully!");
+        return "redirect:/";
+    }
+
+    @GetMapping("customer/{id}/delete")
+    public String deleteCustomerView(@PathVariable int id,Model model) {
+
+        return "delete";
     }
 }
