@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang=vi xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Tạo câu hỏi</title>
+  <!-- Custom fonts for this template -->
+  <link href="templates/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="templates/css/sb-admin-2.min.css" rel="stylesheet">
+  <!-- Custom styles for this page -->
+  <link href="templates/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function (e) {
+      $("#selectSubject").change(function () {
+        alert($('#selectSubject option:selected').val());
+      })
+
+      $("#submitForm").click(function () {
+
+        var quizContent = $("#quizContent").val();
+        var subject = $("#selectSubject option:selected").val();
+        var answer = arr;
+        var correctAnswer = [];
+        var answerCheckbox = $("input[name='checkbox']")
+        for (let i = 0; i < answerCheckbox.length; i++) {
+          if (answerCheckbox[i].checked) {
+            correctAnswer.push(answerCheckbox[i].value);
+          }
+        }
+
+        function check() {
+          if (quizContent != "" && subject != "" && answer.length > 0 && correctAnswer.length > 0) {
+            return true;
+          }
+        }
+
+        if (check()) {
+          //ham ajax
+          var token = $('input[name="_csrf"]').attr('value');
+          var json = { "correctAnswer" : correctAnswer, "content" : quizContent, "subjectName" : subject, "answer" : answer };
+        $.ajax({
+          headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+            'X-CSRF-Token': token
+          },
+          type: 'POST',
+          dataType: 'json',
+          data: JSON.stringify(json),
+          url:'/case4/api/quiz/create',
+          success: function(quizForm){
+            console.log(quizForm);
+            $("#respond").innerHTML = "<span>Thêm câu hỏi thành công</span>";
+          }
+        });
+          console.log(JSON.stringify(json));
+        }
+
+console.log(arr[0]);
+      });
+
+    })
+  </script>
+</head>
+
+<body>
+  <div class="card shadow mb-4">
+    <!-- Card Header - Accordion -->
+    <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseCardExample">
+      <h6 class="m-0 font-weight-bold text-primary">Thêm mới quiz</h6>
+    </a>
+    <!-- Card Content - Collapse -->
+    <div class="collapse show" id="collapseCardExample">
+      <div class="card-body">
+        <form method="post" class="p-3 p-md-4 ">
+          <input
+                  type="hidden"
+                  th:name="${_csrf.parameterName}"
+                  th:value="${_csrf.token}" />
+          <div class="form-group">
+            <label for="quizContent">Nội dung câu hỏi</label>
+            <input type="text" name="title" id="quizContent" class="form-control" placeholder="nhập câu hỏi">
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="selectSubject">Môn học</label>
+              <select class="form-control" name="subjects" id="selectSubject">
+                <option th:each="subject:${subjects}" th:value="${subject.subjectName}" th:text="${subject.subjectName}"></option>
+              </select>
+            </div>
+<!--            <div class="form-group col-md-6" id="divdapandung">-->
+<!--              <label for="selectAnswer">Chọn đáp án đúng</label>-->
+<!--              <select class="form-control" name="ClassTime" id="selectAnswer">-->
+<!--              </select>-->
+<!--            </div>-->
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="inputnhap1">Nhập đáp án</label>
+              <input type="text" id="inputnhap1" class="form-control rounded" placeholder="nhập đáp án">
+            </div>
+            <div class="form-group col-md-1">
+              <input type="button" style="position: relative;top:32px;" value="Thêm" id="addAnswer" onclick="nhapdulieu()" class="btn py-1 px-2 btn-primary">
+            </div>
+            <div class="form-group col-md-1"></div>
+            <div id="div1" class="form-group col-md-6">
+            </div>
+          </div>
+          <div>
+            <input type="button" id="submitForm" value="Lưu" class="btn py-2 px-4 btn-success"><div id="respond"><span>them thanh cong</span></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    var arr = [];
+    function drawTable() {
+      let bang = "<table>";
+      for (i = 0; i < arr.length; i++) {
+        let j = i + 1;
+        bang += "<tr>"+"<td>" + "<input type='checkbox' name='checkbox' value="+i+"></td>";
+        bang += "<td name='valueAnswer' width='300px' style='text-align: left'>" + j + ". " + arr[i] + "</td>";
+        bang += "<td>" + "<input type='button' id=" + i + " value='Sửa' style='border-radius:3px' onclick='editdata(this.id)' class=\"btn py-1 px-2 btn-secondary\">" + "</td>";
+        bang += "<td>" + "<input type='button' id=" + i + " value='Xóa' style='border-radius:3px' onclick='deletedata(this.id)' class=\"btn py-1 px-2 btn-danger\">" + "</td>" + "</tr>";
+      }
+      bang = bang + "</table>"
+      // drawCorrectAnswer();
+      document.getElementById("div1").innerHTML = bang
+    }
+
+    // function drawCorrectAnswer() {
+    //   let selecForm = "<label for=\"inputClassTime\">Đáp án đúng</label><select id=\"inputClassTime\" class=\"form-control\" name=\"ClassTime\">";
+    //   for (i = 0; i < arr.length; i++) {
+    //     let j = i + 1;
+    //     selecForm += "<option value='" + j + "'>" + j + "</option>";
+    //   }
+    //   document.getElementById("divdapandung").innerHTML = selecForm;
+    // }
+
+    function deletedata(id) {
+      arr.splice(parseInt(id), 1);
+      drawTable();
+    }
+
+    function nhapdulieu() {
+      arr.push(document.getElementById("inputnhap1").value);
+      drawTable();
+    }
+
+    function editdata(id) {
+      arr.splice(parseInt(id), 1, a = prompt());
+      drawTable();
+    }
+    drawTable();
+  </script>
+  <!-- Bootstrap core JavaScript-->
+  <script src="templates/vendor/jquery/jquery.min.js"></script>
+  <script src="templates/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Core plugin JavaScript-->
+  <script src="templates/vendor/jquery-easing/jquery.easing.min.js"></script>
+  <!-- Custom scripts for all pages-->
+  <script src="templates/js/sb-admin-2.min.js"></script>
+  <!-- Page level plugins -->
+  <script src="templates/vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="templates/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+  <!-- Page level custom scripts -->
+  <script src="templates/js/demo/datatables-demo.js"></script>
+</body>
+
+</html>

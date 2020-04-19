@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>home</title>
+    <style>
+        #table {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #table td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #table tr:nth-child(even){background-color: #f2f2f2;}
+
+        #table tr:hover {background-color: #ddd;}
+
+        #table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h3>List product</h3>
+<a th:href="@{/create}">Create new product</a>
+<form>
+    Search by first name:
+    <input name="s" type="text"/>
+    <input type="submit" value="Search"/>
+</form><br/>
+    <table id="table">
+        <tr>
+            <th>San pham</th>
+            <th>Tinh</th>
+        </tr>
+        <tr th:each="product,productStat:${products}">
+            <td th:text="${product.getName()}"></td>
+            <td th:text="${product.getProvince().getName()}"></td>
+        </tr>
+    </table>
+<div>
+    <a th:href="@{'/'(page=${products.number - 1})}" th:if="${products.hasPrevious()}">Previous</a>
+    <span th:text="${products.number + 1}"></span>/<span th:text="${products.totalPages}"></span>
+    <a th:href="@{'/'(page=${products.number + 1})}" th:if="${products.hasNext()}">Next</a>
+</div>
+</body>
+</html>

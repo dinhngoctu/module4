@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="thuchanhaspeclog.main:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/thuchanhaspeclog_main_war_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="thuchanhaspeclog.main" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="thuchanhaspeclog.main/web/Web Gradle : thuchanhaspeclog-1.0-SNAPSHOT.war" />
+    </root>
+  </artifact>
+</component>

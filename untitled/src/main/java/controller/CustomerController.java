@@ -44,7 +44,7 @@ public class CustomerController {
         return "edit";
     }
 
-    @PostMapping
+    @PostMapping("/customer/update")
     public String update(Customer customer, RedirectAttributes redirectAttributes) {
         customerService.update(customer.getId(), customer);
         redirectAttributes.addFlashAttribute("success", "Modify customer successfully!");
@@ -52,8 +52,21 @@ public class CustomerController {
     }
 
     @GetMapping("customer/{id}/delete")
-    public String deleteCustomerView(@PathVariable int id,Model model) {
-
+    public String deleteCustomerView(@PathVariable int id, Model model) {
+        model.addAttribute("customer", customerService.findById(id));
         return "delete";
+    }
+
+    @PostMapping("/customer/delete")
+    public String delete(Customer customer, RedirectAttributes redirectAttributes) {
+        customerService.remove(customer.getId());
+        redirectAttributes.addFlashAttribute("success", "Remove customer successfully!");
+        return "redirect:/";
+    }
+
+    @GetMapping("/customer/{id}/view")
+    public String viewCustomer(@PathVariable int id, Model model) {
+        model.addAttribute("customer", customerService.findById(id));
+        return "viewCustomer";
     }
 }

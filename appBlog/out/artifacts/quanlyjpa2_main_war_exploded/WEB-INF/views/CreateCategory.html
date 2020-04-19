@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>create category</title>
+    <script src="templates/js/jquery-3.4.1.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="sCategoryFromResponse"></div>
+<form id="formCategory" th:Object="${category}">
+    <label for="nameCategory">Name</label>
+    <input type="text" id="nameCategory" th:field="*{name}">
+    <button type="submit">save</button>
+</form>
+<script>
+    $(document).ready(function(){
+        $('#formCategory').submit(function(event){
+            var name = $('#nameCategory').val();
+            var json = [{"name" : name }];
+            console.log(JSON.stringify(json));
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+            },
+            type: "POST",
+            data: JSON.stringify(json),
+            url:"/quanlyjpa2/api/category/create",
+            success: function(category){
+                var respContent = "";
+                respContent += "<span class='success'>Category was created: [";
+                respContent += category.name + "]</span>";
+                $('#sCategoryFromResponse').html(respContent);
+            }
+        });
+        event.preventDefault();
+        });
+    });
+</script>
+</body>
+</html>

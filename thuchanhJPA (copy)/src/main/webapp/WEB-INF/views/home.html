@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>home</title>
+</head>
+<body>
+home day
+    <ul>
+        <li th:each="user,userStat:${users}">
+            <p th:text="${user.getUserName()}"></p>
+        </li>
+    </ul>
+</body>
+</html>
